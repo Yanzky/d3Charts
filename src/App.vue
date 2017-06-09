@@ -1,29 +1,45 @@
 <template>
   <div id="app">
+    <!--此处的router-link可以省略，直接在地址输入路径也可以访问子页面-->
+    <!--<router-link to="/base">点击我进入base页面</router-link>-->
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+}
 </script>
 
-<!--<style lang="scss">
-  $color1: #27eb94;
-  $color2: #91e8fe;
-  $line1Color: #25e746;
-  $line2Color: #91e8fe;
-  .charts-info {
-    position: absolute;
-    z-index: 9999;
-    left:0;
-    right: 0;
+<style lang="scss" scoped>
+  html {
     margin: 0;
-    text-align: center;
-
-    .charts-info-major {
-      font-size: 2.5rem;
-    }
+    padding: 0;
+    height: 100%;
   }
 
-</style>-->
+  body {
+    font-family: "Helvetica Neue", Helvetica,Arial, "Microsoft YaHei", "微软雅黑", sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+  }
+  #line .loading {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 999999;
+    background: rgba(6, 19, 28, 1);
+    padding-top: 20%;
+    color: red;
+    text-align: center;
+  }
+</style>
