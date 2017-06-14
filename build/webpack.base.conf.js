@@ -11,7 +11,8 @@ function resolve (dir) {
 
 module.exports = {
   entry: {
-    app: './src/main.js'
+    app: './src/main.js',
+    vendor: ['jquery','d3'] //第三方库
   },
   output: {
     path: config.build.assetsRoot,
@@ -67,8 +68,11 @@ module.exports = {
     ]
   },
   plugins: [
-    // new webpack.ProvidePlugin({
-    //   d3:'d3'
-    // })
+    new webpack.ProvidePlugin({
+      $: "jQuery",
+      "window.jquery": 'jQuery',
+      'jquery': 'jQuery'
+      // d3: 'd3'
+    })
   ]
 }

@@ -26,13 +26,14 @@
 
       <div class='box-footer'>
         <!--<span v-for='item of charts.data' class='lable{{ $index + 1 }}'> <i class='icon{{ $index + 1 }}'>{{ item.label}}</i></span>-->
-        <span v-for='item of charts.data' class='lable'> <i class='icon'>{{ item.label}}</i></span>
+        <span v-for='(value, index) in charts.data' :class="`label${index+1}`"> <i :class="`icon${index+1}`"></i>{{ value.label}}</span>
+
       </div>
     </div>
   </div>
 </template>
 <script>
-  import d3 from 'd3'
+  import * as d3 from 'd3'
   export default{
     data () {
       return {
@@ -63,7 +64,8 @@
             label2: '当前总量'
           },
           charts: {
-            type: 'spline',
+            // type: 'spline', // spline line bar
+            type: 'spline', // spline line bar
             xLabel: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
             data: [
               {
@@ -89,7 +91,8 @@
             label2: '当前总量'
           },
           charts: {
-            type: 'line',
+            // type: 'spline', // spline line bar
+            type: 'line', // spline line bar
             xLabel: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
             data: [
               {
@@ -117,9 +120,8 @@
               }
             }
             var line = d3.line()
-              .x((d, i) => { return x(offset + i + 1) })
-              .y((d) => { return y(d) })
-
+                .x((d, i) => { return x(offset + i + 1) })
+          .y((d) => { return y(d) })
             svg.append('path')
               .datum(data1)
               .attr('class', 'line line-' + index)
@@ -146,9 +148,9 @@
               }
             }
             var area = d3.area()
-              .curve(d3.curvueBasis)
-              .x((d, i) => { return x(offset + i + i) })
-              .y0((height))
+              .curve(d3.curveBasis)
+              .x((d, i) => { return x(offset + i + 1) })
+              .y0(height)
               .y1((d) => { return y(d) })
             var line = d3.line()
               .curve(d3.curveBasis)
@@ -164,9 +166,10 @@
               .attr('d', area)
           }
         }
-        this.$set('header', obj.header)
-        this.$set('charts', obj.charts)
-        this.$set('loading', false)
+        this.header = Object.assign({}, this.header, obj.header)
+        this.charts = Object.assign({}, this.charts, obj.charts)
+        this.loading = false
+
         var el = document.querySelector('.box-charts')
         var footer = document.querySelector('.box-footer')
         var info = document.querySelector('.box-info')
@@ -181,7 +184,7 @@
         }
 
         var width = el.clientWidth - margin.left - margin.right
-        var height = el.clientWidth - margin.top - margin.bottom
+        var height = el.clientHeight - margin.top - margin.bottom
 
         this.d3Obj = d3.select('.box-charts')
         var container = this.d3Obj
@@ -191,14 +194,14 @@
 
         var svg = container.append('g')
           .attr('class', 'content')
-          .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')')
+          .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
         var x = d3.scaleLinear()
           .domain([1, obj.charts.xLabel.length])
           .range([0, width])
 
         var y = d3.scaleLinear()
-          .domain([0, Math.max(d3.max(obj.charts.data[0].values, obj.charts.data[1].values))])
+          .domain([0, Math.max(d3.max(obj.charts.data[0].values), d3.max(obj.charts.data[1].values))])
           .range([height, 0])
 
         var tArr = y.ticks()
@@ -206,7 +209,7 @@
 
         svg.append('g')
           .attr('class', 'grid')
-          .attr('transform', 'translate(0, ' + height + ')')
+          .attr('transform', 'translate(0,' + height + ')')
           .call(d3.axisBottom(x).ticks(10).tickSize(-height).tickFormat(''))
 
         svg.append('g')
@@ -215,7 +218,7 @@
 
         svg.append('g')
           .attr('class', 'axis axis--x')
-          .attr('transform', 'translate(0, ' + height + ')')
+          .attr('transform', 'translate(0,' + height + ')')
           .call(d3.axisBottom(x).tickFormat((d, index) => {
             return obj.charts.xLabel[index]
           }))
@@ -230,13 +233,12 @@
       }
     },
 
-    ready () {
+    mounted () {
       window.entry = this
       if (typeof window.ready === 'function') {
         window.ready()
       }
       this.testLine()
     }
-
   }
 </script>
